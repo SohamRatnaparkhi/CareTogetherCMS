@@ -8,7 +8,6 @@ using CareTogether.Managers;
 using CareTogether.Managers.Approval;
 using CareTogether.Managers.Directory;
 using CareTogether.Managers.Referrals;
-using CareTogether.Resources;
 using CareTogether.Resources.Accounts;
 using CareTogether.Resources.Approvals;
 using CareTogether.Resources.Directory;
@@ -22,6 +21,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.OData;
+using Microsoft.AspNetCore.OData.NewtonsoftJson;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -125,8 +126,14 @@ namespace CareTogether.Api
             // Utility providers
             services.AddSingleton<IFileStore>(new BlobFileStore(immutableBlobServiceClient, "Uploads"));
 
-            // Use legacy Newtonsoft JSON to support JsonPolymorph & NSwag for polymorphic serialization
-            services.AddControllers().AddNewtonsoftJson();
+            // Use legacy Newtonsoft JSON to support JsonPolymorph & NSwag for polymorphic serialization.
+            // This further requires modifying OData to use Newtonsoft JSON mode;
+            // see https://github.com/OData/AspNetCoreOData/blob/main/sample/ODataNewtonsoftJsonSample/Startup.cs
+            services.AddControllers()
+                .AddOData(opt => opt
+                    .EnableQueryFeatures()
+                    .AddRouteComponents("odata", ODataModelProvider.GetEdmModel()))
+                .AddODataNewtonsoftJson();
 
             services.AddAuthorization(options =>
             {
@@ -183,6 +190,8 @@ namespace CareTogether.Api
                         .AllowAnyHeader()
                         .AllowCredentials();
                 });
+
+                app.UseODataRouteDebug();
             }
             else
             {

@@ -5,6 +5,7 @@ using CareTogether.Resources.Directory;
 using CareTogether.Resources.Notes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace CareTogether.Api.Controllers
 
 
         [HttpGet]
+        [EnableQuery]
         public async Task<ActionResult<IEnumerable<CombinedFamilyInfo>>> ListVisibleFamiliesAsync(Guid organizationId, Guid locationId)
         {
             var referrals = await directoryManager.ListVisibleFamiliesAsync(User, organizationId, locationId);

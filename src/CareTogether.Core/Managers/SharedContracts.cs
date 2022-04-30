@@ -7,10 +7,11 @@ using CareTogether.Resources.Notes;
 using CareTogether.Resources.Referrals;
 using System;
 using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
 
 namespace CareTogether.Managers
 {
-    public sealed record CombinedFamilyInfo(Family Family,
+    public sealed record CombinedFamilyInfo([property:Key] Guid Id, Family Family,
         PartneringFamilyInfo? PartneringFamilyInfo, VolunteerFamilyInfo? VolunteerFamilyInfo,
         ImmutableList<Note> Notes, ImmutableList<UploadedDocumentInfo> UploadedDocuments);
 

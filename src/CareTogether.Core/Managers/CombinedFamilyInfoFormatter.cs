@@ -71,8 +71,8 @@ namespace CareTogether.Managers
                 .Where(udi => !family.DeletedDocuments.Contains(udi.UploadedDocumentId))
                 .ToImmutableList();
 
-            return new CombinedFamilyInfo(disclosedFamily, partneringFamilyInfo, volunteerFamilyInfo, disclosedNotes,
-                allUploadedDocuments);
+            return new CombinedFamilyInfo(disclosedFamily.Id, disclosedFamily,
+                partneringFamilyInfo, volunteerFamilyInfo, disclosedNotes, allUploadedDocuments);
         }
 
 
