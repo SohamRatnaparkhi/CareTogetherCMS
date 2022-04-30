@@ -57,7 +57,15 @@ namespace CareTogether.Api
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAdB2C"));
-            
+
+            services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                var tenant = "caretogetherb2cdev";
+                var policy = "B2C_1A_signup_signin";
+                var authorizationUri = $"https://{tenant}.b2clogin.com/{tenant}.onmicrosoft.com/{policy}/oauth2/v2.0/authorize";
+                options.Challenge = $"Bearer authorization_uri=\"{authorizationUri}\"";
+            });
+
             services.AddTransient<IClaimsTransformation, TenantUserClaimsTransformation>();
 
             // Shared blob storage clients configured to authenticate according to the environment -
